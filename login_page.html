@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Flip Login & Register</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed, #ec4899);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Decorative Background Elements */
+        .bg-element {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.7;
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        .bg-element:nth-child(1) {
+            width: 320px;
+            height: 320px;
+            background: #8b5cf6;
+            top: -160px;
+            right: -160px;
+        }
+
+        .bg-element:nth-child(2) {
+            width: 320px;
+            height: 320px;
+            background: #ec4899;
+            bottom: -160px;
+            left: -160px;
+            animation-delay: 2s;
+        }
+
+        .bg-element:nth-child(3) {
+            width: 384px;
+            height: 384px;
+            background: #6366f1;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.3;
+            animation-delay: 4s;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Main Container */
+        .container {
+            width: 100%;
+            max-width: 600px;
+            height: 880px;
+            perspective: 1000px;
+        }
+
+        /* Flip Card */
+        .flip-card {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .flip-card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        /* Card Faces */
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+        }
+        .card-front {
+          height: 540px;
+      }
+        .card-back {
+            height: 660px;
+            transform: rotateY(180deg);
+            position: relative;
+            top: -50px;
+        }
+        /* Header Styles */
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .icon-container {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4);
+        }
+
+        .card-back .icon-container {
+            background: linear-gradient(135deg, #ec4899, #7c3aed);
+            box-shadow: 0 10px 25px rgba(236, 72, 153, 0.4);
+        }
+
+        .icon-container i {
+            font-size: 28px;
+            color: white;
+        }
+
+        .header h2 {
+            color: white;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 20px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 16px 16px 16px 52px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            color: white;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .form-control:focus {
+            border-color: rgba(124, 58, 237, 0.5);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.3);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        /* Button Styles */
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4);
+        }
+
+        .card-back .btn-primary {
+            background: linear-gradient(135deg, #ec4899, #7c3aed);
+            box-shadow: 0 10px 25px rgba(236, 72, 153, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(79, 70, 229, 0.6);
+        }
+
+        .card-back .btn-primary:hover {
+            box-shadow: 0 15px 35px rgba(236, 72, 153, 0.6);
+        }
+
+        .btn-link {
+            background: none;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 0;
+        }
+
+        .btn-link:hover {
+            color: white;
+            text-decoration: underline;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                height: 520px;
+            }
+            
+            .card-face {
+                padding: 32px 24px;
+            }
+            .card-back {
+            height: 620px;
+            transform: rotateY(180deg);
+            position: relative;
+            top: -50px;
+        }
+            
+            .header h2 {
+                font-size: 24px;
+            }
+            
+            .form-control {
+                padding: 14px 14px 14px 48px;
+                font-size: 15px;
+            }
+            
+            .input-with-icon i {
+                font-size: 18px;
+            }
+            
+            .btn {
+                padding: 14px;
+                font-size: 15px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .container {
+                height: 560px;
+            }
+            
+            .card-face {
+                padding: 28px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Decorative Elements -->
+    <div class="bg-element"></div>
+    <div class="bg-element"></div>
+    <div class="bg-element"></div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <div class="flip-card" id="flipCard">
+            <!-- Login Form (Front) -->
+            <div class="card-face card-front">
+                <div class="header">
+                    <div class="icon-container">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h2>Welcome Back</h2>
+                    <p>Log in to your account</p>
+                </div>
+                
+                <form id="loginForm">
+                    <div class="form-group">
+                        <div class="input-with-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" class="form-control" id="loginEmail" placeholder="Email address" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="password-container">
+                            <div class="input-with-icon">
+                                <i class="fas fa-lock"></i>
+                                <input type="password" class="form-control" id="loginPassword" placeholder="Password" required>
+                            </div>
+                            <button type="button" class="toggle-password" id="toggleLoginPassword">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Log In</button>
+                    <button type="button" class="btn btn-link" id="showRegister">Don't have an account? Sign up</button>
+                </form>
+            </div>
+            
+            <!-- Register Form (Back) -->
+            <div class="card-face card-back">
+                <div class="header">
+                    <div class="icon-container">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h2>Create Account</h2>
+                    <p>Join us today</p>
+                </div>
+                
+                <form id="registerForm">
+                    <div class="form-group">
+                        <div class="input-with-icon">
+                            <i class="fas fa-user"></i>
+                            <input type="text" class="form-control" id="registerName" placeholder="Full name" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="input-with-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" class="form-control" id="registerEmail" placeholder="Email address" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="password-container">
+                            <div class="input-with-icon">
+                                <i class="fas fa-lock"></i>
+                                <input type="password" class="form-control" id="registerPassword" placeholder="Password" required>
+                            </div>
+                            <button type="button" class="toggle-password" id="toggleRegisterPassword">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="password-container">
+                            <div class="input-with-icon">
+                                <i class="fas fa-lock"></i>
+                                <input type="password" class="form-control" id="registerConfirmPassword" placeholder="Confirm password" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Sign Up</button>
+                    <button type="button" class="btn btn-link" id="showLogin">Already have an account? Log in</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const flipCard = document.getElementById('flipCard');
+            const showRegisterBtn = document.getElementById('showRegister');
+            const showLoginBtn = document.getElementById('showLogin');
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const toggleLoginPassword = document.getElementById('toggleLoginPassword');
+            const toggleRegisterPassword = document.getElementById('toggleRegisterPassword');
+            const loginPassword = document.getElementById('loginPassword');
+            const registerPassword = document.getElementById('registerPassword');
+
+            // Flip to Register
+            showRegisterBtn.addEventListener('click', function() {
+                flipCard.classList.add('flipped');
+            });
+
+            // Flip to Login
+            showLoginBtn.addEventListener('click', function() {
+                flipCard.classList.remove('flipped');
+            });
+
+            // Toggle Login Password Visibility
+            toggleLoginPassword.addEventListener('click', function() {
+                const type = loginPassword.getAttribute('type') === 'password' ? 'text' : 'password';
+                loginPassword.setAttribute('type', type);
+                this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+            });
+
+            // Toggle Register Password Visibility
+            toggleRegisterPassword.addEventListener('click', function() {
+                const type = registerPassword.getAttribute('type') === 'password' ? 'text' : 'password';
+                registerPassword.setAttribute('type', type);
+                this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+            });
+
+            // Handle Login Form Submission
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                console.log('Login:', { email, password });
+                // Here you would typically send the data to your server
+                alert('Login form submitted!');
+            });
+
+            // Handle Register Form Submission
+            registerForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const name = document.getElementById('registerName').value;
+                const email = document.getElementById('registerEmail').value;
+                const password = document.getElementById('registerPassword').value;
+                const confirmPassword = document.getElementById('registerConfirmPassword').value;
+                
+                if (password !== confirmPassword) {
+                    alert('Passwords do not match!');
+                    return;
+                }
+                
+                console.log('Register:', { name, email, password });
+                // Here you would typically send the data to your server
+                alert('Registration form submitted!');
+            });
+
+            // Add floating animation effect on load
+            setTimeout(() => {
+                document.querySelector('.container').style.transform = 'translateY(0)';
+            }, 100);
+        });
+    </script>
+</body>
+</html>
